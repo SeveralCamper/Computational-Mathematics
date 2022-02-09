@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <iomanip>
-#include <iostream>
-#include <fstream>
-
-#include "../lib/lab_1.h"
+#include "lab_2.h"
 
 double* itreator(double** matrix, double* free_members_array, int matrix_length) {
 	double* res = new double[matrix_length]; // по началу хранит начальное приближение: элементы вектора свободных челнов/ на диоганальный элемент.
@@ -18,18 +12,18 @@ double* itreator(double** matrix, double* free_members_array, int matrix_length)
 
 	do {
 		for (int i = 0; i < matrix_length; i++) {
-			Xn[i] = free_members_array[i] / matrix[i][i]; // задаем начаольное приблежение для дальнейших вычислений
+			Xn[i] = free_members_array[i] / matrix[i][i];
 			for (int j = 0; j < matrix_length; j++) {
-				if (i == j) { // пропускаем диагональные элементы общей матрицы
+				if (i == j) {
                     continue;
                 } else {
-					Xn[i] -= matrix[i][j] / matrix[i][i] * res[j]; // формула простых итераций 
+					Xn[i] -= matrix[i][j] / matrix[i][i] * res[j];
 				}
 			}
 		}
 
 		bool flag = true;
-		for (int i = 0; i < matrix_length - 1; i++) { // проверяем, явялется ли текущее приближение необходимой точности
+		for (int i = 0; i < matrix_length - 1; i++) {
 			if (abs(Xn[i] - res[i]) > eps) {
 				flag = false;
 				break;
@@ -48,7 +42,7 @@ double* itreator(double** matrix, double* free_members_array, int matrix_length)
 	return res;
 }
 
-int main() {
+/* int main() {
     int matrix_length, alloc_err;
 	double** matrix;
 	double *resualt_array, *free_members_array;
@@ -99,7 +93,7 @@ int main() {
             std::cout << std::endl;
         }
 
-        resualt_array = itreator(matrix, free_members_array, matrix_length);
+        resualt_array = iter(matrix, free_members_array, matrix_length);
 
         for (int i = 0; i < matrix_length; i++) {
             std::cout << "x" << i+1 << ": " <<resualt_array[i] << std::endl;
@@ -114,4 +108,4 @@ int main() {
     free(matrix);
 
 	return 0;
-}
+} */
