@@ -12,18 +12,18 @@ double* itreator(double** matrix, double* free_members_array, int matrix_length)
 
 	do {
 		for (int i = 0; i < matrix_length; i++) {
-			Xn[i] = free_members_array[i] / matrix[i][i];
+			Xn[i] = free_members_array[i] / matrix[i][i]; // задаем начаольное приблежение для дальнейших вычислений
 			for (int j = 0; j < matrix_length; j++) {
-				if (i == j) {
+				if (i == j) { // пропускаем диагональные элементы общей матрицы
                     continue;
                 } else {
-					Xn[i] -= matrix[i][j] / matrix[i][i] * res[j];
+					Xn[i] -= matrix[i][j] / matrix[i][i] * res[j]; // формула простых итераций 
 				}
 			}
 		}
 
 		bool flag = true;
-		for (int i = 0; i < matrix_length - 1; i++) {
+		for (int i = 0; i < matrix_length - 1; i++) { // проверяем, явялется ли текущее приближение необходимой точности
 			if (abs(Xn[i] - res[i]) > eps) {
 				flag = false;
 				break;
@@ -93,7 +93,7 @@ double* itreator(double** matrix, double* free_members_array, int matrix_length)
             std::cout << std::endl;
         }
 
-        resualt_array = iter(matrix, free_members_array, matrix_length);
+        resualt_array = itreator(matrix, free_members_array, matrix_length);
 
         for (int i = 0; i < matrix_length; i++) {
             std::cout << "x" << i+1 << ": " <<resualt_array[i] << std::endl;

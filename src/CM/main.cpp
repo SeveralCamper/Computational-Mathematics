@@ -6,112 +6,78 @@
 
 #include "../lib/lab_1.h"
 
-double* itreator(double** matrix, double* free_members_array, int matrix_length) {
-	double* res = new double[matrix_length]; // по началу хранит начальное приближение: элементы вектора свободных челнов/ на диоганальный элемент.
-                                             // затем просто хранит результат
-	for (int i = 0; i < matrix_length; i++) {
-		res[i] = free_members_array[i] / matrix[i][i]; // делаем начальное приближение
-	}
-
-	double eps = 0.0001;
-	double* Xn = new double[matrix_length]; // хранит последнее приблежение на итерации
-
-	do {
-		for (int i = 0; i < matrix_length; i++) {
-			Xn[i] = free_members_array[i] / matrix[i][i]; // задаем начаольное приблежение для дальнейших вычислений
-			for (int j = 0; j < matrix_length; j++) {
-				if (i == j) { // пропускаем диагональные элементы общей матрицы
-                    continue;
-                } else {
-					Xn[i] -= matrix[i][j] / matrix[i][i] * res[j]; // формула простых итераций 
-				}
-			}
-		}
-
-		bool flag = true;
-		for (int i = 0; i < matrix_length - 1; i++) { // проверяем, явялется ли текущее приближение необходимой точности
-			if (abs(Xn[i] - res[i]) > eps) {
-				flag = false;
-				break;
-			}
-		}
-
-		for (int i = 0; i < matrix_length; i++) {
-			res[i] = Xn[i];
-		}
-
-		if (flag) {
-			break;
-        }
-	} while (1);
-
-	return res;
-}
+#define EPSILON 0.0001
 
 int main() {
-    int matrix_length, alloc_err;
-	double** matrix;
-	double *resualt_array, *free_members_array;
-	std::ifstream file("src/CM/conf_file_2.txt");
-    
-    std::cout << "Please enter the matrix_length" << std::endl;
-    std::cin >> matrix_length;
+    int equations_num, variables_num, alloc_err = 0;
+    double **matrix;
 
-	free_members_array = new double[matrix_length];
+    std::cout << "Please enter the number of lines" << std::endl;
+    std::cin >> equations_num;
+    std::cout << "Please enter the number of cloumns" << std::endl;
+    std::cin >> variables_num;
 
-    if ((matrix = (double**)malloc(matrix_length * sizeof(double*))) != NULL) {
-        for (int i = 0; i < matrix_length; i++) {
-		    if ((matrix[i] = (double*)malloc((matrix_length) * sizeof(double))) != NULL) {
+    if ((matrix = (double**)malloc(equations_num * sizeof(double*))) != NULL) {
+        for (int i = 0; i < equations_num; i++) {
+            if ((matrix[i] = (double*)malloc(variables_num * sizeof(double))) != NULL) {
 
             } else {
                 std::cout << "Memory allocation error!" << std::endl;
                 alloc_err = 1;
-                break;  
+                break;
             }
-	    }
+        }
     } else {
         std::cout << "Memory allocation error!" << std::endl;
-        alloc_err = 1;      
     }
+
+    for (int i = 0; i < equations_num; i++) {
+        for (int j = 0; j < variables_num; j++) {
+            matrix[i][j] = 0;
+        }
+    }
+
+    print_matrix(matrix, equations_num, variables_num);
 
     if (alloc_err != 1) {
-        for (int i = 0; i < matrix_length; i++) {
-            for (int j = 0; j <= matrix_length; j++) {
-                if (j != matrix_length) {
-                    file >> matrix[i][j];
+        std::cout << "The memory has been allocated successfully!" << std::endl;
+
+        std::ifstream file("src/CM/conf_file_test.txt");
+
+        for (int i = 0; i < equations_num; i++){
+            for (int j = 0; j< variables_num; j++) {
+                file >> matrix[i][j];
+            }
+        }
+
+        print_matrix(matrix, equations_num, variables_num);
+
+        for (int i = 0; i < equations_num; i++) {
+                double divide = matrix[i][i];
+                for (int j = i; j < variables_num; j++) {
+                matrix[i][j] = matrix[i][j]/divide;
                 }
-                else {
-                    file >> free_members_array[i];
+
+                for (int l = 0; l < equations_num; l++) {
+                if (l != i){
+                    double subtract = matrix[l][i];
+                    matrix[l][i] = 0;
+                    for (int m = i+1; m < variables_num; m++)
+                    {
+                    matrix[l][m] =  matrix[l][m] - subtract*matrix[i][m];
+                    }
                 }
             }
         }
-        file.close();
 
-        for (int i = 0; i < matrix_length; i++) {
-            for (int j = 0; j <= matrix_length; j++) {
-                if (j != matrix_length) {
-                    std::cout << matrix[i][j] << "\t";
-                }
-                else {
-                    std::cout << "| " << free_members_array[i] << "\t";
-                }
-            }
-            std::cout << std::endl;
-        }
-
-        resualt_array = itreator(matrix, free_members_array, matrix_length);
-
-        for (int i = 0; i < matrix_length; i++) {
-            std::cout << "x" << i+1 << ": " <<resualt_array[i] << std::endl;
-        }
-        std::cout << std::endl;
+        print_matrix(matrix, equations_num, variables_num);
     }
 
-    for (int i = 0; i < matrix_length; i++) {
+    for (int i = 0; i < equations_num; i++) {
         free(matrix[i]);
     }
 
     free(matrix);
 
-	return 0;
+    return 0;
 }

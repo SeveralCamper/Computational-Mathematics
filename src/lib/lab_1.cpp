@@ -55,7 +55,7 @@ void print_matrix(double **matrix, int equations_num, int variables_num) {
     if (alloc_err != 1) {
         std::cout << "The memory has been allocated successfully!" << std::endl;
 
-        std::ifstream file("src/CM/conf_file_1.txt");
+        std::ifstream file("src/CM/conf_file.txt");
 
         for (int i = 0; i < equations_num; i++){
             for (int j = 0; j< variables_num; j++) {
@@ -88,7 +88,7 @@ void print_matrix(double **matrix, int equations_num, int variables_num) {
         print_matrix(matrix, equations_num, variables_num);
     }
 
-    for (int i = 0; i < matrix_length; i++) {
+    for (int i = 0; i < equations_num; i++) {
         free(matrix[i]);
     }
 
