@@ -62,8 +62,7 @@ int main() {
                 if (l != i){
                     double subtract = matrix[l][i];
                     matrix[l][i] = 0;
-                    for (int m = i+1; m < variables_num; m++)
-                    {
+                    for (int m = i+1; m < variables_num; m++) {
                     matrix[l][m] =  matrix[l][m] - subtract*matrix[i][m];
                     }
                 }
